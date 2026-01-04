@@ -1,0 +1,80 @@
+{
+  "common": {
+    "other": "Other",
+    "search": "Search…",
+    "errorTitle": "Could not save",
+    "successTitle": "Submitted ✅",
+    "successMsg": "Thank you!"
+  },
+  "placeholders": {
+    "bags": "bags (integer)",
+    "kg": "kg (e.g., 8.5)"
+  },
+  "endUse": {
+    "recycled": "recycled",
+    "disposed": "disposed",
+    "reused": "reused"
+  },
+  "survey": {
+    "title": "Trash Management Survey",
+    "subtitle": "Please fill in what you collected",
+    "homestay": {
+      "sectionTitle": "1) Homestay",
+      "selectLabel": "Select your homestay(s)",
+      "placeholder": "Choose homestay(s)",
+      "otherLabel": "Other homestay name",
+      "otherPlaceholder": "Type name…",
+      "bagsLabel": "How many bags per homestay?",
+      "kgLabel": "How many kg per homestay?"
+    },
+    "trash": {
+      "sectionTitle": "2) Trash types",
+      "selectLabel": "Select trash type(s)",
+      "placeholder": "Choose trash type(s)",
+      "detailsLabel": "For each selected trash type: kg + end-use",
+      "kgLabel": "Kg",
+      "endUseLabel": "End-use",
+      "fixedDisposed": "End-use is always: disposed"
+    },
+    "locations": {
+      "sectionTitle": "3) Cleanup locations",
+      "selectLabel": "Select cleanup location(s)",
+      "placeholder": "Choose location(s)",
+      "otherLabel": "Other location name",
+      "otherPlaceholder": "Type name…",
+      "bagsLabel": "Bags per location",
+      "kgLabel": "Kg per location"
+    },
+    "totals": {
+      "sectionTitle": "Totals",
+      "bagsHomestay": "Total bags (homestay)",
+      "kgHomestay": "Total kg (homestay)",
+      "kgTrash": "Total kg (trash)",
+      "bagsLocation": "Total bags (location)",
+      "kgLocation": "Total kg (location)"
+    },
+    "submit": "Submit ✅",
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "id": "Bahasa Indonesia"
+    }
+  },
+  "trash": {
+    "sachets": "Sachets",
+    "ropes": "Ropes",
+    "styrofoam": "Styrofoam",
+    "pop_mie": "Pop Mie",
+    "soft_plastics": "Soft plastics",
+    "medium_plastics_non_renewable": "Medium plastics (non-renewable)",
+    "medium_plastics_renewable": "Medium plastics (renewable)",
+    "hard_plastics": "Hard plastics",
+    "clothing": "Clothing",
+    "metal_electronics": "Metal & electronics",
+    "aqua_cups": "Aqua cups",
+    "carton_paper": "Carton & paper",
+    "plastic_bottles": "Plastic bottles",
+    "sandals": "Sandals",
+    "rice_bags": "Rice bags"
+  }
+}

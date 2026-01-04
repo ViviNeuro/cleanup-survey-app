@@ -1,0 +1,80 @@
+{
+  "common": {
+    "other": "Lainnya",
+    "search": "Cari…",
+    "errorTitle": "Gagal menyimpan",
+    "successTitle": "Terkirim ✅",
+    "successMsg": "Terima kasih!"
+  },
+  "placeholders": {
+    "bags": "kantong (angka)",
+    "kg": "kg (mis. 8.5)"
+  },
+  "endUse": {
+    "recycled": "daur ulang",
+    "disposed": "dibuang",
+    "reused": "dipakai ulang"
+  },
+  "survey": {
+    "title": "Survei Pengelolaan Sampah",
+    "subtitle": "Silakan isi data sampah yang dikumpulkan",
+    "homestay": {
+      "sectionTitle": "1) Homestay",
+      "selectLabel": "Pilih homestay",
+      "placeholder": "Pilih homestay",
+      "otherLabel": "Nama homestay lainnya",
+      "otherPlaceholder": "Tulis nama…",
+      "bagsLabel": "Berapa kantong per homestay?",
+      "kgLabel": "Berapa kg per homestay?"
+    },
+    "trash": {
+      "sectionTitle": "2) Jenis sampah",
+      "selectLabel": "Pilih jenis sampah",
+      "placeholder": "Pilih jenis sampah",
+      "detailsLabel": "Untuk tiap jenis sampah: kg + tujuan akhir",
+      "kgLabel": "Kg",
+      "endUseLabel": "Tujuan akhir",
+      "fixedDisposed": "Tujuan akhir selalu: dibuang"
+    },
+    "locations": {
+      "sectionTitle": "3) Lokasi bersih-bersih",
+      "selectLabel": "Pilih lokasi",
+      "placeholder": "Pilih lokasi",
+      "otherLabel": "Nama lokasi lainnya",
+      "otherPlaceholder": "Tulis nama…",
+      "bagsLabel": "Kantong per lokasi",
+      "kgLabel": "Kg per lokasi"
+    },
+    "totals": {
+      "sectionTitle": "Total",
+      "bagsHomestay": "Total kantong (homestay)",
+      "kgHomestay": "Total kg (homestay)",
+      "kgTrash": "Total kg (sampah)",
+      "bagsLocation": "Total kantong (lokasi)",
+      "kgLocation": "Total kg (lokasi)"
+    },
+    "submit": "Kirim ✅",
+    "language": {
+      "label": "Bahasa",
+      "en": "English",
+      "id": "Bahasa Indonesia"
+    }
+  },
+  "trash": {
+    "sachets": "Sachet",
+    "ropes": "Tali",
+    "styrofoam": "Styrofoam",
+    "pop_mie": "Pop Mie",
+    "soft_plastics": "Plastik lunak",
+    "medium_plastics_non_renewable": "Plastik sedang (non-terbarukan)",
+    "medium_plastics_renewable": "Plastik sedang (terbarukan)",
+    "hard_plastics": "Plastik keras",
+    "clothing": "Pakaian",
+    "metal_electronics": "Logam & elektronik",
+    "aqua_cups": "Gelas Aqua",
+    "carton_paper": "Karton & kertas",
+    "plastic_bottles": "Botol plastik",
+    "sandals": "Sandal",
+    "rice_bags": "Karung beras"
+  }
+}

@@ -1,16 +1,20 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
     "strict": true,
+    "moduleResolution": "bundler",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
+    "**/*.json",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
