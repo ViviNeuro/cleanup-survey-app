@@ -6,13 +6,16 @@
     "successTitle": "Submitted ✅",
     "successMsg": "Thank you!",
     "specify": "Specify",
-    "optional": "Optional"
+    "optional": "Optional",
+    "bag": "Bag"
   },
 
   "placeholders": {
     "bags": "Number of bags",
     "kg": "Weight in kg (e.g. 8.5)",
-    "otherText": "Type here…"
+    "otherText": "Type here…",
+    "name": "Type name…",
+    "destination": "Select destination"
   },
 
   "survey": {
@@ -20,7 +23,7 @@
     "subtitle": "Please record what was collected",
 
     "homestay": {
-      "sectionTitle": "Homestays",
+      "title": "Homestays",
       "selectLabel": "Select homestay(s)",
       "placeholder": "Choose homestay(s)",
       "otherLabel": "Other homestay name",
@@ -30,7 +33,7 @@
     },
 
     "locations": {
-      "sectionTitle": "Cleanup locations",
+      "title": "Cleanup locations",
       "selectLabel": "Select cleanup location(s)",
       "placeholder": "Choose location(s)",
       "otherLabel": "Other location name",
@@ -40,7 +43,7 @@
     },
 
     "trash": {
-      "sectionTitle": "Trash types",
+      "title": "Sorting",
       "selectLabel": "Select trash type(s)",
       "placeholder": "Choose trash type(s)",
 
@@ -53,13 +56,31 @@
       "typeTotalLabel": "Total ({{type}})",
       "kgOptionalNote": "Kg is optional",
 
-      "totalsTitle": "Summary",
+      "summaryTitle": "Summary",
       "totalBags": "Total bags",
       "totalKg": "Total kg"
     },
 
+    "destinations": {
+      "title": "Destinations",
+      "subtitle": "Where each bag is going",
+
+      "destinationLabel": "Destination",
+      "destinationPlaceholder": "Select destination",
+
+      "summaryTitle": "Summary",
+      "totalBags": "Total bags",
+
+      "submitting": "Submitting…",
+
+      "errors": {
+        "noBags": "Please add at least one bag.",
+        "missingDestination": "Please select a destination for: {{item}}"
+      }
+    },
+
     "totals": {
-      "sectionTitle": "Totals",
+      "title": "Totals",
       "bagsHomestay": "Total bags (homestays)",
       "kgHomestay": "Total weight (homestays)",
       "bagsLocation": "Total bags (locations)",
@@ -94,22 +115,6 @@
   },
 
   "destinations": {
-    "sectionTitle": "Destinations per trash type",
-    "bagsLabel": "Bags",
-    "destinationLabel": "Destination",
-    "destinationPlaceholder": "Select destination",
-    "hintOptional": "Optional if bags = 0",
-
-    "totalsTitle": "Summary",
-    "totalBags": "Total bags",
-
-    "submitting": "Submitting…",
-
-    "errors": {
-      "noBags": "Please add at least one bag.",
-      "missingDestination": "Please select a destination for: {{item}}"
-    },
-
     "landfill": "Landfill",
     "bank_sampah": "Waste bank",
     "kri": "Kri Island"
@@ -124,6 +129,9 @@
 
     "recycleTitle": "Destinations",
     "recycleSubtitle": "Where each bag is going",
+
+    "analyticsTitle": "Analytics",
+    "analyticsSubtitle": "View totals",
 
     "footerNote": "Made by Soul Initiatives – Raja Ampat"
   }

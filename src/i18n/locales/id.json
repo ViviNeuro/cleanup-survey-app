@@ -6,60 +6,81 @@
     "successTitle": "Terkirim ✅",
     "successMsg": "Terima kasih!",
     "specify": "Jelaskan",
-    "optional": "Opsional"
+    "optional": "Opsional",
+    "bag": "Kantong"
   },
 
   "placeholders": {
     "bags": "Jumlah kantong",
     "kg": "Berat dalam kg (mis. 8,5)",
-    "otherText": "Tulis di sini…"
+    "otherText": "Ketik di sini…",
+    "name": "Ketik nama…",
+    "destination": "Pilih tujuan"
   },
 
   "survey": {
     "title": "Survei Pengelolaan Sampah",
-    "subtitle": "Silakan catat sampah yang dikumpulkan",
+    "subtitle": "Silakan catat hasil yang dikumpulkan",
 
     "homestay": {
-      "sectionTitle": "Homestay",
+      "title": "Homestay",
       "selectLabel": "Pilih homestay",
       "placeholder": "Pilih homestay",
       "otherLabel": "Nama homestay lainnya",
-      "otherPlaceholder": "Tulis nama…",
+      "otherPlaceholder": "Ketik nama…",
       "bagsLabel": "Jumlah kantong per homestay",
-      "kgLabel": "Berat per homestay (kg)"
+      "kgLabel": "Berat terkumpul per homestay (kg)"
     },
 
     "locations": {
-      "sectionTitle": "Lokasi bersih-bersih",
-      "selectLabel": "Pilih lokasi bersih-bersih",
+      "title": "Lokasi pembersihan",
+      "selectLabel": "Pilih lokasi pembersihan",
       "placeholder": "Pilih lokasi",
       "otherLabel": "Nama lokasi lainnya",
-      "otherPlaceholder": "Tulis nama…",
+      "otherPlaceholder": "Ketik nama…",
       "bagsLabel": "Jumlah kantong per lokasi",
-      "kgLabel": "Berat per lokasi (kg)"
+      "kgLabel": "Berat terkumpul per lokasi (kg)"
     },
 
     "trash": {
-      "sectionTitle": "Jenis sampah",
+      "title": "Penyortiran",
       "selectLabel": "Pilih jenis sampah",
       "placeholder": "Pilih jenis sampah",
 
       "otherLabel": "Jenis sampah lainnya",
-      "otherPlaceholder": "Tulis jenis sampah…",
+      "otherPlaceholder": "Ketik jenis sampah…",
 
       "bagsCountLabel": "Jumlah kantong",
       "bagKgLabel": "Berat tiap kantong (kg)",
       "bagNLabel": "Kantong {{n}}",
       "typeTotalLabel": "Total ({{type}})",
-      "kgOptionalNote": "Berat bersifat opsional",
+      "kgOptionalNote": "Berat (kg) bersifat opsional",
 
-      "totalsTitle": "Ringkasan",
+      "summaryTitle": "Ringkasan",
       "totalBags": "Total kantong",
-      "totalKg": "Total berat (kg)"
+      "totalKg": "Total kg"
+    },
+
+    "destinations": {
+      "title": "Tujuan",
+      "subtitle": "Ke mana setiap kantong dibawa",
+
+      "destinationLabel": "Tujuan",
+      "destinationPlaceholder": "Pilih tujuan",
+
+      "summaryTitle": "Ringkasan",
+      "totalBags": "Total kantong",
+
+      "submitting": "Mengirim…",
+
+      "errors": {
+        "noBags": "Silakan tambahkan setidaknya satu kantong.",
+        "missingDestination": "Silakan pilih tujuan untuk: {{item}}"
+      }
     },
 
     "totals": {
-      "sectionTitle": "Total",
+      "title": "Total",
       "bagsHomestay": "Total kantong (homestay)",
       "kgHomestay": "Total berat (homestay)",
       "bagsLocation": "Total kantong (lokasi)",
@@ -70,7 +91,7 @@
 
     "language": {
       "label": "Bahasa",
-      "en": "English",
+      "en": "Inggris",
       "id": "Bahasa Indonesia"
     }
   },
@@ -79,8 +100,8 @@
     "sachets_soft_plastics": "Sachet / plastik lunak",
     "ropes": "Tali",
     "styrofoam": "Styrofoam",
-    "pop_mie": "Kemasan mi instan",
-    "medium_plastics_non_renewable": "Plastik sedang (non-terbarukan)",
+    "pop_mie": "Kemasan mie instan",
+    "medium_plastics_non_renewable": "Plastik sedang (tidak terbarukan)",
     "medium_plastics_renewable": "Plastik sedang (terbarukan)",
     "hard_plastics": "Plastik keras",
     "clothing": "Pakaian / tekstil",
@@ -94,36 +115,23 @@
   },
 
   "destinations": {
-    "sectionTitle": "Tujuan tiap jenis sampah",
-    "bagsLabel": "Kantong",
-    "destinationLabel": "Tujuan",
-    "destinationPlaceholder": "Pilih tujuan",
-    "hintOptional": "Opsional jika jumlah kantong = 0",
-
-    "totalsTitle": "Ringkasan",
-    "totalBags": "Total kantong",
-
-    "submitting": "Mengirim…",
-
-    "errors": {
-      "noBags": "Silakan tambahkan setidaknya satu kantong.",
-      "missingDestination": "Silakan pilih tujuan untuk: {{item}}"
-    },
-
-    "landfill": "Tempat Pembuangan Akhir (TPA)",
-    "bank_sampah": "Bank Sampah",
+    "landfill": "Tempat pembuangan akhir",
+    "bank_sampah": "Bank sampah",
     "kri": "Pulau Kri"
   },
 
   "menu": {
     "locationTitle": "Lokasi",
-    "locationSubtitle": "Homestay dan lokasi bersih-bersih",
+    "locationSubtitle": "Homestay dan lokasi pembersihan",
 
-    "trashTitle": "Pemilahan",
-    "trashSubtitle": "Catat kantong dan berat per kantong",
+    "trashTitle": "Penyortiran",
+    "trashSubtitle": "Catat kantong dan kg per kantong",
 
     "recycleTitle": "Tujuan",
     "recycleSubtitle": "Ke mana setiap kantong dibawa",
+
+    "analyticsTitle": "Analitik",
+    "analyticsSubtitle": "Lihat total",
 
     "footerNote": "Dibuat oleh Soul Initiatives – Raja Ampat"
   }
