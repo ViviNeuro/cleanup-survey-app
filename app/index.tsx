@@ -146,6 +146,11 @@ export default function Index() {
               subtitle={t("menu.recycleSubtitle")}
               onPress={() => router.push("/recycle")}
             />
+            <MenuCard
+              title="Analytics"
+              subtitle="View totals"
+              onPress={() => router.push("../analytics")}
+            />
           </View>
 
           {/* Spacer to push footer to bottom */}

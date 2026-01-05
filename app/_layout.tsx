@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { initI18n } from "@/src/i18n/i18n";
 
 // Keep splash on screen while we load i18n
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -19,10 +18,10 @@ export default function RootLayout() {
   useEffect(() => {
     (async () => {
       try {
-        await initI18n();
+        // i18n is initialized by importing it above
+        // so nothing to await here
       } catch (e) {
-        // don't brick the app if i18n fails
-        console.warn("initI18n failed:", e);
+        console.warn("i18n init failed:", e);
       } finally {
         await SplashScreen.hideAsync();
       }
@@ -64,6 +63,13 @@ export default function RootLayout() {
           options={{
             presentation: "modal",
             title: "Destinations",
+          }}
+        />
+
+        <Stack.Screen
+          name="analytics"
+          options={{
+            title: "Analytics",
           }}
         />
       </Stack>
