@@ -4,77 +4,127 @@
     "search": "Search…",
     "errorTitle": "Could not save",
     "successTitle": "Submitted ✅",
-    "successMsg": "Thank you!"
+    "successMsg": "Thank you!",
+    "specify": "Specify",
+    "optional": "Optional"
   },
+
   "placeholders": {
-    "bags": "bags (integer)",
-    "kg": "kg (e.g., 8.5)"
+    "bags": "Number of bags",
+    "kg": "Weight in kg (e.g. 8.5)",
+    "otherText": "Type here…"
   },
-  "endUse": {
-    "recycled": "recycled",
-    "disposed": "disposed",
-    "reused": "reused"
-  },
+
   "survey": {
     "title": "Trash Management Survey",
-    "subtitle": "Please fill in what you collected",
+    "subtitle": "Please record what was collected",
+
     "homestay": {
-      "sectionTitle": "1) Homestay",
-      "selectLabel": "Select your homestay(s)",
+      "sectionTitle": "Homestays",
+      "selectLabel": "Select homestay(s)",
       "placeholder": "Choose homestay(s)",
       "otherLabel": "Other homestay name",
       "otherPlaceholder": "Type name…",
-      "bagsLabel": "How many bags per homestay?",
-      "kgLabel": "How many kg per homestay?"
+      "bagsLabel": "Bags collected per homestay",
+      "kgLabel": "Weight collected per homestay (kg)"
     },
-    "trash": {
-      "sectionTitle": "2) Trash types",
-      "selectLabel": "Select trash type(s)",
-      "placeholder": "Choose trash type(s)",
-      "detailsLabel": "For each selected trash type: kg + end-use",
-      "kgLabel": "Kg",
-      "endUseLabel": "End-use",
-      "fixedDisposed": "End-use is always: disposed"
-    },
+
     "locations": {
-      "sectionTitle": "3) Cleanup locations",
+      "sectionTitle": "Cleanup locations",
       "selectLabel": "Select cleanup location(s)",
       "placeholder": "Choose location(s)",
       "otherLabel": "Other location name",
       "otherPlaceholder": "Type name…",
-      "bagsLabel": "Bags per location",
-      "kgLabel": "Kg per location"
+      "bagsLabel": "Bags collected per location",
+      "kgLabel": "Weight collected per location (kg)"
     },
+
+    "trash": {
+      "sectionTitle": "Trash types",
+      "selectLabel": "Select trash type(s)",
+      "placeholder": "Choose trash type(s)",
+
+      "otherLabel": "Other trash type",
+      "otherPlaceholder": "Type trash type…",
+
+      "bagsCountLabel": "Number of bags",
+      "bagKgLabel": "Kg for each bag",
+      "bagNLabel": "Bag {{n}}",
+      "typeTotalLabel": "Total ({{type}})",
+      "kgOptionalNote": "Kg is optional",
+
+      "totalsTitle": "Summary",
+      "totalBags": "Total bags",
+      "totalKg": "Total kg"
+    },
+
     "totals": {
       "sectionTitle": "Totals",
-      "bagsHomestay": "Total bags (homestay)",
-      "kgHomestay": "Total kg (homestay)",
-      "kgTrash": "Total kg (trash)",
-      "bagsLocation": "Total bags (location)",
-      "kgLocation": "Total kg (location)"
+      "bagsHomestay": "Total bags (homestays)",
+      "kgHomestay": "Total weight (homestays)",
+      "bagsLocation": "Total bags (locations)",
+      "kgLocation": "Total weight (locations)"
     },
+
     "submit": "Submit ✅",
+
     "language": {
       "label": "Language",
       "en": "English",
       "id": "Bahasa Indonesia"
     }
   },
+
   "trash": {
-    "sachets": "Sachets",
+    "sachets_soft_plastics": "Sachets / soft plastics",
     "ropes": "Ropes",
     "styrofoam": "Styrofoam",
-    "pop_mie": "Pop Mie",
-    "soft_plastics": "Soft plastics",
+    "pop_mie": "Instant noodle packaging",
     "medium_plastics_non_renewable": "Medium plastics (non-renewable)",
     "medium_plastics_renewable": "Medium plastics (renewable)",
     "hard_plastics": "Hard plastics",
-    "clothing": "Clothing",
+    "clothing": "Clothing / textiles",
     "metal_electronics": "Metal & electronics",
-    "aqua_cups": "Aqua cups",
+    "aqua_cups": "Plastic cups",
     "carton_paper": "Carton & paper",
     "plastic_bottles": "Plastic bottles",
-    "sandals": "Sandals",
-    "rice_bags": "Rice bags"
+    "sandals": "Sandals / footwear",
+    "rice_bags": "Rice bags",
+    "other": "Other"
+  },
+
+  "destinations": {
+    "sectionTitle": "Destinations per trash type",
+    "bagsLabel": "Bags",
+    "destinationLabel": "Destination",
+    "destinationPlaceholder": "Select destination",
+    "hintOptional": "Optional if bags = 0",
+
+    "totalsTitle": "Summary",
+    "totalBags": "Total bags",
+
+    "submitting": "Submitting…",
+
+    "errors": {
+      "noBags": "Please add at least one bag.",
+      "missingDestination": "Please select a destination for: {{item}}"
+    },
+
+    "landfill": "Landfill",
+    "bank_sampah": "Waste bank",
+    "kri": "Kri Island"
+  },
+
+  "menu": {
+    "locationTitle": "Location",
+    "locationSubtitle": "Homestays and cleanup locations",
+
+    "trashTitle": "Sorting",
+    "trashSubtitle": "Record bags and kg per bag",
+
+    "recycleTitle": "Destinations",
+    "recycleSubtitle": "Where each bag is going",
+
+    "footerNote": "Made by Soul Initiatives – Raja Ampat"
   }
 }

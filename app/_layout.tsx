@@ -1,3 +1,5 @@
+// app/_layout.tsx
+
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -52,7 +54,7 @@ export default function RootLayout() {
           name="trash"
           options={{
             presentation: "modal",
-            title: "Trash type",
+            title: "Sorting",
           }}
         />
 
@@ -61,7 +63,7 @@ export default function RootLayout() {
           name="recycle"
           options={{
             presentation: "modal",
-            title: "Recycle",
+            title: "Destinations",
           }}
         />
       </Stack>
