@@ -2,37 +2,73 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import { colors } from "@/src/colors";
 import { supabase } from "@/src/lib/supabase";
 import { theme } from "@/src/theme";
 
-const LOCATION_TABLE = "cleanup_location_surveys";
-const TRASH_TABLE = "cleanup_trash_surveys";
-const DESTINATIONS_TABLE = "cleanup_destinations_surveys"; // change if your table name differs
+type Period = "day" | "month" | "year";
 
-type Totals = {
-  locationSubmissions: number;
-  trashSubmissions: number;
-  destinationsSubmissions: number;
+type AnalyticsRow = {
+  period_start: string; // timestamptz -> string
 
-  totalBagsHomestay: number;
-  totalKgHomestay: number;
-  totalBagsLocation: number;
-  totalKgLocation: number;
+  location_submissions: number;
+  trash_submissions: number;
+  destinations_submissions: number;
 
-  totalKgTrash: number;
+  total_bags_homestay: number;
+  total_kg_homestay: number;
+  total_bags_location: number;
+  total_kg_location: number;
 
-  totalBagsDestinations: number;
+  total_kg_trash: number;
+  total_bags_destinations: number;
 };
 
-function Card({ title, value, subtitle }: { title: string; value: string; subtitle?: string }) {
+function Pill({
+  text,
+  active,
+  onPress,
+}: {
+  text: string;
+  active: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.9}
+      style={[
+        styles.pill,
+        {
+          backgroundColor: active ? colors.primary : colors.card,
+          borderColor: active ? colors.primary : colors.border,
+        },
+      ]}
+    >
+      <Text style={{ fontWeight: "900", color: active ? "#fff" : colors.textPrimary }}>
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+  subtitle,
+}: {
+  title: string;
+  value: string;
+  subtitle?: string;
+}) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{title}</Text>
@@ -42,139 +78,167 @@ function Card({ title, value, subtitle }: { title: string; value: string; subtit
   );
 }
 
-const sumNumber = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : 0);
+function formatPeriodLabel(period: Period, iso: string) {
+  const d = new Date(iso);
+
+  if (period === "day") {
+    return new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "2-digit" }).format(d);
+  }
+  if (period === "month") {
+    return new Intl.DateTimeFormat(undefined, { year: "numeric", month: "long" }).format(d);
+  }
+  return new Intl.DateTimeFormat(undefined, { year: "numeric" }).format(d);
+}
 
 export default function AnalyticsScreen() {
   const { t } = useTranslation();
+
+  const [period, setPeriod] = useState<Period>("day");
   const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<AnalyticsRow[]>([]);
 
-  const [totals, setTotals] = useState<Totals>({
-    locationSubmissions: 0,
-    trashSubmissions: 0,
-    destinationsSubmissions: 0,
-    totalBagsHomestay: 0,
-    totalKgHomestay: 0,
-    totalBagsLocation: 0,
-    totalKgLocation: 0,
-    totalKgTrash: 0,
-    totalBagsDestinations: 0,
-  });
-
-  const fetchTotals = useCallback(async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
-      // 1) Locations
-      const { data: locRows, error: locErr } = await supabase
-        .from(LOCATION_TABLE)
-        .select("total_bags_homestay,total_kg_homestay,total_bags_location,total_kg_location");
+      const { data, error } = await supabase.rpc("cleanup_analytics", { p_period: period });
 
-      if (locErr) throw locErr;
+      if (error) throw error;
 
-      const locationSubmissions = locRows?.length ?? 0;
+      // Supabase types are loose; normalize numbers defensively
+      const safe: AnalyticsRow[] = (data ?? []).map((r: any) => ({
+        period_start: String(r.period_start),
 
-      const totalBagsHomestay =
-        (locRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_bags_homestay), 0);
+        location_submissions: Number(r.location_submissions ?? 0),
+        trash_submissions: Number(r.trash_submissions ?? 0),
+        destinations_submissions: Number(r.destinations_submissions ?? 0),
 
-      const totalKgHomestay =
-        (locRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_kg_homestay), 0);
+        total_bags_homestay: Number(r.total_bags_homestay ?? 0),
+        total_kg_homestay: Number(r.total_kg_homestay ?? 0),
+        total_bags_location: Number(r.total_bags_location ?? 0),
+        total_kg_location: Number(r.total_kg_location ?? 0),
 
-      const totalBagsLocation =
-        (locRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_bags_location), 0);
+        total_kg_trash: Number(r.total_kg_trash ?? 0),
+        total_bags_destinations: Number(r.total_bags_destinations ?? 0),
+      }));
 
-      const totalKgLocation =
-        (locRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_kg_location), 0);
-
-      // 2) Trash
-      const { data: trashRows, error: trashErr } = await supabase
-        .from(TRASH_TABLE)
-        .select("total_kg_trash");
-
-      if (trashErr) throw trashErr;
-
-      const trashSubmissions = trashRows?.length ?? 0;
-      const totalKgTrash =
-        (trashRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_kg_trash), 0);
-
-      // 3) Destinations (optional — won’t crash if table missing)
-      let destinationsSubmissions = 0;
-      let totalBagsDestinations = 0;
-
-      const { data: destRows, error: destErr } = await supabase
-        .from(DESTINATIONS_TABLE)
-        .select("total_bags");
-
-      if (!destErr) {
-        destinationsSubmissions = destRows?.length ?? 0;
-        totalBagsDestinations =
-          (destRows ?? []).reduce((acc, r) => acc + sumNumber(r.total_bags), 0);
-      }
-
-      setTotals({
-        locationSubmissions,
-        trashSubmissions,
-        destinationsSubmissions,
-        totalBagsHomestay,
-        totalKgHomestay,
-        totalBagsLocation,
-        totalKgLocation,
-        totalKgTrash,
-        totalBagsDestinations,
-      });
+      setRows(safe);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [period]);
 
   useEffect(() => {
-    fetchTotals();
-  }, [fetchTotals]);
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
-  const cards = useMemo(
-    () => [
-      { title: "Location submissions", value: String(totals.locationSubmissions) },
-      { title: "Sorting submissions", value: String(totals.trashSubmissions) },
-      { title: "Destinations submissions", value: String(totals.destinationsSubmissions) },
+  const cardsByPeriod = useMemo(() => {
+    return rows.map((r) => {
+      const label = formatPeriodLabel(period, r.period_start);
 
-      { title: "Total bags (homestays)", value: String(totals.totalBagsHomestay) },
-      { title: "Total kg (homestays)", value: totals.totalKgHomestay.toFixed(1) },
+      return {
+        key: r.period_start,
+        label,
+        stats: [
+          {
+            title: "Location submissions",
+            value: String(r.location_submissions),
+          },
+          {
+            title: "Sorting submissions",
+            value: String(r.trash_submissions),
+          },
+          {
+            title: "Destinations submissions",
+            value: String(r.destinations_submissions),
+          },
 
-      { title: "Total bags (locations)", value: String(totals.totalBagsLocation) },
-      { title: "Total kg (locations)", value: totals.totalKgLocation.toFixed(1) },
+          {
+            title: "Bags (homestays)",
+            value: String(Math.round(r.total_bags_homestay)),
+            subtitle: `Kg: ${r.total_kg_homestay.toFixed(1)}`,
+          },
+          {
+            title: "Bags (locations)",
+            value: String(Math.round(r.total_bags_location)),
+            subtitle: `Kg: ${r.total_kg_location.toFixed(1)}`,
+          },
 
-      { title: "Total kg (sorting)", value: totals.totalKgTrash.toFixed(1) },
-
-      { title: "Total bags (destinations)", value: String(totals.totalBagsDestinations) },
-    ],
-    [totals]
-  );
+          {
+            title: "Kg (sorting)",
+            value: r.total_kg_trash.toFixed(1),
+          },
+          {
+            title: "Bags (destinations)",
+            value: String(Math.round(r.total_bags_destinations)),
+          },
+        ],
+      };
+    });
+  }, [rows, period]);
 
   return (
     <ScrollView
       style={theme.screen}
       contentContainerStyle={{ paddingBottom: 34, paddingHorizontal: 18, paddingTop: 18 }}
-      refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchTotals} />}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchAnalytics} />}
     >
       <Text style={theme.title}>Analytics</Text>
-      <Text style={theme.subtitle}>Quick totals from submitted surveys</Text>
+      <Text style={theme.subtitle}>Totals grouped by {period}</Text>
 
-      <View style={styles.grid}>
-      {cards.map((c) => (
-        <Card key={c.title} title={c.title} value={c.value} />
-        ))}
+      {/* Period toggle */}
+      <View style={styles.periodRow}>
+        <Pill text="Day" active={period === "day"} onPress={() => setPeriod("day")} />
+        <Pill text="Month" active={period === "month"} onPress={() => setPeriod("month")} />
+        <Pill text="Year" active={period === "year"} onPress={() => setPeriod("year")} />
       </View>
 
-      <Text style={styles.hint}>
-        Pull down to refresh.
-      </Text>
+      {/* Empty state */}
+      {cardsByPeriod.length === 0 ? (
+        <Text style={styles.hint}>No submissions yet.</Text>
+      ) : (
+        <View style={{ marginTop: 14, gap: 18 }}>
+          {cardsByPeriod.map((block) => (
+            <View key={block.key}>
+              <Text style={styles.periodTitle}>{block.label}</Text>
+              <View style={styles.grid}>
+                {block.stats.map((s) => (
+                  <StatCard key={s.title} title={s.title} value={s.value} subtitle={s.subtitle} />
+                ))}
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <Text style={styles.hint}>Pull down to refresh.</Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  periodRow: {
+    marginTop: 12,
+    flexDirection: "row",
+    gap: 8,
+  },
+  pill: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+
+  periodTitle: {
+    fontSize: 14,
+    fontWeight: "900",
+    color: colors.textPrimary,
+    marginBottom: 10,
+  },
+
   grid: {
-    marginTop: 14,
     gap: 12,
   },
+
   card: {
     backgroundColor: colors.card,
     borderWidth: 1,
@@ -190,7 +254,7 @@ const styles = StyleSheet.create({
   },
   cardValue: {
     marginTop: 6,
-    fontSize: 28,
+    fontSize: 26,
     color: colors.textPrimary,
     fontWeight: "900",
   },
@@ -199,8 +263,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textSecondary,
   },
+
   hint: {
-    marginTop: 12,
+    marginTop: 14,
     textAlign: "center",
     color: colors.textSecondary,
     fontSize: 12,
