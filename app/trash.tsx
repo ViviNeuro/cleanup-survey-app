@@ -15,13 +15,10 @@ import { MultiSelect } from "react-native-element-dropdown";
 import { colors } from "@/src/colors";
 import i18n from "@/src/i18n/i18n";
 import { supabase } from "@/src/lib/supabase";
+import { useSession } from "@/src/session/SessionContext";
 import { theme } from "@/src/theme";
 
-const TRASH_TABLE = "cleanup_trash_surveys";
-
-/* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
-/* -------------------------------------------------------------------------- */
+const TRASH_TABLE = "cleanup_trash_entries";
 
 type TrashTypeKey =
   | "sachets_soft_plastics"
@@ -64,10 +61,6 @@ const isTrashTypeKey = (x: string): x is TrashTypeKey => TRASH_SET.has(x as Tras
 type BagsKgInputMap = Partial<Record<TrashTypeKey, string[]>>;
 type BagsKgNumMap = Partial<Record<TrashTypeKey, number[]>>;
 
-/* -------------------------------------------------------------------------- */
-/*                                  HELPERS                                   */
-/* -------------------------------------------------------------------------- */
-
 // keep digits + comma + dot, and only ONE decimal separator
 function sanitizeDecimalInput(v: string) {
   let s = v.replace(/[^\d.,]/g, "");
@@ -80,7 +73,6 @@ function sanitizeDecimalInput(v: string) {
   return s;
 }
 
-// accepts "12,5" or "12.5"
 function parseLocaleNumber(input: string): number | null {
   const trimmed = (input || "").trim();
   if (!trimmed) return null;
@@ -122,19 +114,9 @@ function sum(nums: number[]) {
   return nums.reduce((acc, n) => acc + n, 0);
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   UI                                      */
-/* -------------------------------------------------------------------------- */
+/* ------------------------------- UI bits ---------------------------------- */
 
-function Pill({
-  text,
-  active,
-  onPress,
-}: {
-  text: string;
-  active: boolean;
-  onPress: () => void;
-}) {
+function Pill({ text, active, onPress }: { text: string; active: boolean; onPress: () => void }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -162,13 +144,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return <View style={theme.card}>{children}</View>;
 }
 
-function Stepper({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (next: number) => void;
-}) {
+function Stepper({ value, onChange }: { value: number; onChange: (next: number) => void }) {
   return (
     <View style={styles.stepperRow}>
       <TouchableOpacity
@@ -192,12 +168,11 @@ function Stepper({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   SCREEN                                   */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------- Screen ---------------------------------- */
 
 export default function TrashModal() {
   const { t } = useTranslation();
+  const { sessionId, ensureSession } = useSession();
 
   const [lang, setLang] = useState<"en" | "id">((i18n.language as "en" | "id") || "en");
   const changeLang = async (next: "en" | "id") => {
@@ -221,35 +196,32 @@ export default function TrashModal() {
 
   const onTrashChange = (values: string[]) => setTrashTypes(values.filter(isTrashTypeKey));
 
-  // Keep bagsCount + inputs aligned with selection changes
   useEffect(() => {
+    // keep counts for selected keys only
     setBagsCount((prev) => {
       const next: Partial<Record<TrashTypeKey, number>> = {};
       for (const tt of trashTypes) next[tt] = prev[tt] ?? 0;
       return next;
     });
 
+    // keep kg arrays aligned with count for each selected type
     setBagsKgInput((prev) => {
       const next: BagsKgInputMap = {};
       for (const tt of trashTypes) {
-        const count = (bagsCount[tt] ?? 0);
+        const count = bagsCount[tt] ?? 0;
         next[tt] = ensureArrayLen(prev[tt], count);
       }
       return next;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     });
 
-    // if "other" was deselected, clear its label
     if (!trashTypes.includes("other")) setOtherTrashLabel("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trashTypes]);
 
   const setCountForType = (tt: TrashTypeKey, count: number) => {
     setBagsCount((p) => ({ ...p, [tt]: count }));
-    setBagsKgInput((p) => ({
-      ...p,
-      [tt]: ensureArrayLen(p[tt], count),
-    }));
+    setBagsKgInput((p) => ({ ...p, [tt]: ensureArrayLen(p[tt], count) }));
   };
 
   const computed = useMemo(() => {
@@ -262,11 +234,7 @@ export default function TrashModal() {
       bags_count_by_type[tt] = count;
 
       const inputs = ensureArrayLen(bagsKgInput[tt], count);
-
-      // IMPORTANT: kg is NOT mandatory — we ignore blanks/invalids in totals.
-      const nums: number[] = inputs
-        .map(parseLocaleNumber)
-        .filter((x): x is number => x !== null);
+      const nums: number[] = inputs.map(parseLocaleNumber).filter((x): x is number => x !== null);
 
       bags_kg_num[tt] = nums;
       totals_kg_by_type[tt] = sum(nums);
@@ -286,30 +254,25 @@ export default function TrashModal() {
   };
 
   const onSubmit = async () => {
-    // ✅ Nothing mandatory:
-    // - Allow submit with no selection and no bags
-    // - Allow blank kg inputs
+    const sid = sessionId ?? (await ensureSession());
+    if (!sid) {
+      Alert.alert(t("common.errorTitle"), "No session available. Please try again.");
+      return;
+    }
 
-    const row = {
-      collected_at: nowIsoWithFixedOffset(9 * 60), // GMT+9
-
+    const payload = {
+      session_id: sid,
+      collected_at: nowIsoWithFixedOffset(9 * 60),
       trash_types: trashTypes,
-
-      // free text name for "Other" (nullable)
       other_trash_label: trashTypes.includes("other") ? otherTrashLabel.trim() || null : null,
-
-      // per-bag weights (only the entered numbers are stored here)
       bags_kg: computed.bags_kg_num,
-
-      // aggregates from entered numbers
       totals_kg_by_type: computed.totals_kg_by_type,
       bags_count_by_type: computed.bags_count_by_type,
       total_bags_trash: computed.total_bags_trash,
       total_kg_trash: computed.total_kg_trash,
     };
 
-    const { error } = await supabase.from(TRASH_TABLE).insert(row);
-
+    const { error } = await supabase.from(TRASH_TABLE).insert(payload);
     if (error) {
       Alert.alert(t("common.errorTitle"), error.message);
       return;
@@ -329,7 +292,7 @@ export default function TrashModal() {
       <Text style={theme.title}>{t("menu.trashTitle")}</Text>
       <Text style={theme.subtitle}>{t("menu.trashSubtitle")}</Text>
 
-      <Text style={theme.sectionTitle}>{t("survey.trash.sectionTitle")}</Text>
+      <Text style={theme.sectionTitle}>{t("survey.trash.title")}</Text>
 
       <View style={{ marginBottom: 10 }}>
         <Label>{t("survey.trash.selectLabel")}</Label>
@@ -359,46 +322,43 @@ export default function TrashModal() {
         </View>
       </View>
 
-      {/* Free-text for Other */}
       {trashTypes.includes("other") && (
         <Card>
           <Text style={styles.itemTitle}>{t("common.other")}</Text>
-          <Label>Specify</Label>
+          <Label>{t("survey.trash.otherLabel")}</Label>
           <TextInput
             value={otherTrashLabel}
             onChangeText={setOtherTrashLabel}
-            placeholder="Type trash type…"
+            placeholder={t("survey.trash.otherPlaceholder")}
             placeholderTextColor={colors.textSecondary}
             style={theme.input}
           />
         </Card>
       )}
 
-      {/* Per-type bags */}
       {trashTypes.map((tt) => {
         const count = bagsCount[tt] ?? 0;
         const inputs = ensureArrayLen(bagsKgInput[tt], count);
         const totalForType = computed.totals_kg_by_type[tt] ?? 0;
 
-        const title =
-          tt === "other"
-            ? otherTrashLabel.trim() || t("common.other")
-            : t(`trash.${tt}`);
+        const title = tt === "other" ? otherTrashLabel.trim() || t("common.other") : t(`trash.${tt}`);
 
         return (
           <Card key={tt}>
             <Text style={styles.itemTitle}>{title}</Text>
 
-            <Label>Number of bags</Label>
+            <Label>{t("survey.trash.bagsCountLabel")}</Label>
             <Stepper value={count} onChange={(next) => setCountForType(tt, next)} />
 
             {count > 0 && (
               <>
-                <Label>Kg for each bag (optional)</Label>
+                <Label>
+                  {t("survey.trash.kgPerBagLabel")} ({t("common.optional")})
+                </Label>
 
                 {inputs.map((val, idx) => (
                   <View key={`${tt}-bag-${idx}`} style={{ marginTop: 8 }}>
-                    <Text style={styles.bagLabel}>Bag {idx + 1}</Text>
+                    <Text style={styles.bagLabel}>{t("survey.trash.bagLabel", { n: idx + 1 })}</Text>
                     <TextInput
                       value={val}
                       onChangeText={(v) => {
@@ -418,7 +378,7 @@ export default function TrashModal() {
                 ))}
 
                 <Text style={styles.typeTotal}>
-                  Total ({title}):{" "}
+                  {t("survey.trash.totalForType", { item: title })}:{" "}
                   <Text style={styles.typeTotalValue}>{totalForType.toFixed(1)} kg</Text>
                 </Text>
               </>
@@ -427,10 +387,11 @@ export default function TrashModal() {
         );
       })}
 
-      <Text style={theme.sectionTitle}>{t("survey.totals.sectionTitle")}</Text>
+      <Text style={theme.sectionTitle}>{t("survey.totals.title")}</Text>
       <Card>
         <Text style={styles.totalLine}>
-          Total bags: <Text style={styles.totalValue}>{computed.total_bags_trash}</Text>
+          {t("survey.totals.bagsTrash")}:{" "}
+          <Text style={styles.totalValue}>{computed.total_bags_trash}</Text>
         </Text>
         <Text style={styles.totalLine}>
           {t("survey.totals.kgTrash")}:{" "}
@@ -444,10 +405,6 @@ export default function TrashModal() {
     </ScrollView>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                   STYLES                                   */
-/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   langRow: {

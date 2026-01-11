@@ -1,26 +1,29 @@
 // app/recycle.tsx
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 import { colors } from "@/src/colors";
 import { supabase } from "@/src/lib/supabase";
+import { useSession } from "@/src/session/SessionContext";
 import { theme } from "@/src/theme";
 
 /**
  * ✅ Option B architecture:
  * This modal submits ONLY destination-related data (bags + destination per trash type),
  * creating a separate row in Supabase.
+ *
+ * Table: cleanup_destination_entries
+ * Columns used:
+ * - session_id (uuid)
+ * - collected_at (timestamptz)
+ * - destination_details (jsonb)
+ * - total_bags (int)
+ *
+ * Note: created_at is auto UTC in Supabase; we group analytics in local tz (Asia/Jayapura).
  */
-const DESTINATIONS_TABLE = "cleanup_destination_surveys";
+const DESTINATIONS_TABLE = "cleanup_destination_entries";
 
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
@@ -82,6 +85,8 @@ const DESTINATIONS: { labelKey: string; value: DestinationKey }[] = [
 /**
  * Returns ISO string with fixed +09:00 offset (GMT+9).
  * Example: 2026-01-05T12:34:56+09:00
+ *
+ * Safe to insert into timestamptz in Postgres.
  */
 function nowIsoWithFixedOffset(offsetMinutes: number) {
   const now = new Date();
@@ -113,13 +118,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return <View style={theme.card}>{children}</View>;
 }
 
-function Stepper({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (next: number) => void;
-}) {
+function Stepper({ value, onChange }: { value: number; onChange: (next: number) => void }) {
   const dec = () => onChange(Math.max(0, value - 1));
   const inc = () => onChange(value + 1);
 
@@ -146,6 +145,7 @@ function Stepper({
 
 export default function RecycleModal() {
   const { t } = useTranslation();
+  const { sessionId, ensureSession } = useSession();
 
   const [byType, setByType] = useState<StateMap>({});
   const [submitting, setSubmitting] = useState(false);
@@ -159,8 +159,7 @@ export default function RecycleModal() {
     [t]
   );
 
-  const getRow = (k: TrashTypeKey): RowState =>
-    byType[k] ?? { bags: 0, destination: null };
+  const getRow = (k: TrashTypeKey): RowState => byType[k] ?? { bags: 0, destination: null };
 
   const setBags = (k: TrashTypeKey, bags: number) => {
     setByType((prev) => ({
@@ -180,11 +179,12 @@ export default function RecycleModal() {
 
   const totalBags = useMemo(() => {
     return TRASH_TYPES.reduce((acc, k) => acc + (getRow(k).bags || 0), 0);
-  }, [byType]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [byType]);
 
   const validate = () => {
     if (totalBags === 0) {
-      return { ok: false, message: t("destinations.errors.noBags") };
+      return { ok: false as const, message: t("destinations.errors.noBags") };
     }
 
     // For each type with bags > 0, destination is required
@@ -192,7 +192,7 @@ export default function RecycleModal() {
       const row = getRow(k);
       if (row.bags > 0 && !row.destination) {
         return {
-          ok: false,
+          ok: false as const,
           message: t("destinations.errors.missingDestination", {
             item: t(`trash.${k}`),
           }),
@@ -213,11 +213,14 @@ export default function RecycleModal() {
     setSubmitting(true);
 
     try {
+      const sid = sessionId ?? (await ensureSession());
+      if (!sid) {
+        Alert.alert(t("common.errorTitle"), "No session available. Please try again.");
+        return;
+      }
+
       // Build compact payload: only include trash types with bags > 0
-      const destination_details: Record<
-        string,
-        { bags: number; destination: DestinationKey }
-      > = {};
+      const destination_details: Record<string, { bags: number; destination: DestinationKey }> = {};
 
       for (const k of TRASH_TYPES) {
         const row = getRow(k);
@@ -229,13 +232,14 @@ export default function RecycleModal() {
         }
       }
 
-      const row = {
+      const payload = {
+        session_id: sid,
         collected_at: nowIsoWithFixedOffset(9 * 60), // GMT+9
         destination_details,
         total_bags: totalBags,
       };
 
-      const { error } = await supabase.from(DESTINATIONS_TABLE).insert(row);
+      const { error } = await supabase.from(DESTINATIONS_TABLE).insert(payload);
 
       if (error) {
         Alert.alert(t("common.errorTitle"), error.message);
@@ -289,7 +293,6 @@ export default function RecycleModal() {
                   />
                 </View>
 
-                {/* If bags is 0, destination is optional, so we can visually soften it */}
                 {row.bags === 0 && (
                   <Text style={styles.hintText}>{t("destinations.hintOptional")}</Text>
                 )}
@@ -303,8 +306,7 @@ export default function RecycleModal() {
       <Text style={theme.sectionTitle}>{t("destinations.totalsTitle")}</Text>
       <Card>
         <Text style={styles.totalLine}>
-          {t("destinations.totalBags")}:{" "}
-          <Text style={styles.totalValue}>{totalBags}</Text>
+          {t("destinations.totalBags")}: <Text style={styles.totalValue}>{totalBags}</Text>
         </Text>
       </Card>
 

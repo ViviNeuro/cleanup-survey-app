@@ -1,4 +1,18 @@
 // app/location.tsx
+
+useEffect(() => {
+  (async () => {
+    const { data, error } = await supabase
+      .from("cleanup_location_entries")
+      .select("id, created_at, collected_at, total_bags_homestay, total_kg_homestay")
+      .limit(5);
+
+    console.log("LOCATION ROWS:", data);
+    console.log("LOCATION ERROR:", error);
+  })();
+}, []);
+
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,6 +28,7 @@ import { MultiSelect } from "react-native-element-dropdown";
 
 import { colors } from "@/src/colors";
 import { supabase } from "@/src/lib/supabase";
+import { useSession } from "@/src/session/SessionContext";
 import { theme } from "@/src/theme";
 
 /**
@@ -21,7 +36,7 @@ import { theme } from "@/src/theme";
  * This modal submits ONLY location-related data (homestays + cleanup locations),
  * creating a separate row in Supabase.
  */
-const LOCATION_TABLE = "cleanup_location_surveys";
+const LOCATION_TABLE = "cleanup_location_entries";
 
 const HOMESTAYS = ["Yenbuba", "Bongkso", "Mongkor", "Paparissa", "Kri"] as const;
 const LOCATIONS = ["Yenbeser", "Mioskun", "Merpati", "Keruwo", "Kri", "Yenbuba", "Koi"] as const;
@@ -228,6 +243,7 @@ function MultiSelectBlock({
 
 export default function LocationModal() {
   const { t } = useTranslation();
+  const { sessionId, ensureSession } = useSession();
 
   // optional language toggle inside modal
   const [lang, setLang] = useState<"en" | "id">("en");
@@ -326,23 +342,29 @@ export default function LocationModal() {
       Alert.alert(t("common.errorTitle"), t("survey.locations.needSelection"));
       return;
     }
+  const sid = sessionId ?? (await ensureSession());
+  if (!sid) {
+    Alert.alert(t("common.errorTitle"), "No session available. Please try again.");
+    return;
+  }
 
-    const row = {
-      collected_at: nowIsoWithFixedOffset(9 * 60), // GMT+9
-      homestays: finalHomestays,
-      cleanup_locations: finalLocations,
-
-      homestay_bags: toIntMap(homestayBags),
-      homestay_kg: toFloatMapCommaAware(homestayKg),
-
-      location_bags: toIntMap(locationBags),
-      location_kg: toFloatMapCommaAware(locationKg),
-
-      total_bags_homestay: totals.total_bags_homestay,
-      total_kg_homestay: totals.total_kg_homestay,
-      total_bags_location: totals.total_bags_location,
-      total_kg_location: totals.total_kg_location,
-    };
+  const row = {
+    session_id: sid,
+    collected_at: nowIsoWithFixedOffset(9 * 60),
+    homestays: finalHomestays,
+    locations: finalLocations,
+  
+    homestay_bags: toIntMap(homestayBags),
+    homestay_kg: toFloatMapCommaAware(homestayKg),
+  
+    location_bags: toIntMap(locationBags),
+    location_kg: toFloatMapCommaAware(locationKg),
+  
+    total_bags_homestay: totals.total_bags_homestay,
+    total_kg_homestay: totals.total_kg_homestay,
+    total_bags_location: totals.total_bags_location,
+    total_kg_location: totals.total_kg_location,
+  };
 
     const { error } = await supabase.from(LOCATION_TABLE).insert(row);
 
@@ -368,7 +390,7 @@ export default function LocationModal() {
       <Text style={theme.subtitle}>{t("menu.locationSubtitle")}</Text>
 
       {/* 1) Homestays */}
-      <Text style={theme.sectionTitle}>{t("survey.homestay.sectionTitle")}</Text>
+      <Text style={theme.sectionTitle}>{t("survey.homestay.title")}</Text>
 
       <MultiSelectBlock
         label={t("survey.homestay.selectLabel")}
@@ -423,7 +445,7 @@ export default function LocationModal() {
       )}
 
       {/* 2) Cleanup locations */}
-      <Text style={theme.sectionTitle}>{t("survey.locations.sectionTitle")}</Text>
+      <Text style={theme.sectionTitle}>{t("survey.locations.title")}</Text>
 
       <MultiSelectBlock
         label={t("survey.locations.selectLabel")}
@@ -478,7 +500,7 @@ export default function LocationModal() {
       )}
 
       {/* Totals */}
-      <Text style={theme.sectionTitle}>{t("survey.totals.sectionTitle")}</Text>
+      <Text style={theme.sectionTitle}>{t("survey.totals.title")}</Text>
       <Card>
         <Text style={styles.totalLine}>
           {t("survey.totals.bagsHomestay")}:{" "}
