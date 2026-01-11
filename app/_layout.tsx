@@ -1,5 +1,6 @@
 // app/_layout.tsx
 
+import { SessionProvider } from "@/src/session/SessionContext";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -29,52 +30,20 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        {/* Home screen with 3 buttons */}
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-          }}
-        />
-
-        {/* Modal: Location (homestays + cleanup locations) */}
-        <Stack.Screen
-          name="location"
-          options={{
-            presentation: "modal",
-            title: "Location",
-          }}
-        />
-
-        {/* Modal: Trash type */}
-        <Stack.Screen
-          name="trash"
-          options={{
-            presentation: "modal",
-            title: "Sorting",
-          }}
-        />
-
-        {/* Modal: Recycle (blank for now) */}
-        <Stack.Screen
-          name="recycle"
-          options={{
-            presentation: "modal",
-            title: "Destinations",
-          }}
-        />
-
-        <Stack.Screen
-          name="analytics"
-          options={{
-            title: "Analytics",
-          }}
-        />
-      </Stack>
-
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          {/* Home screen */}
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+  
+          <Stack.Screen name="location" options={{ presentation: "modal", title: "Location" }} />
+          <Stack.Screen name="trash" options={{ presentation: "modal", title: "Sorting" }} />
+          <Stack.Screen name="recycle" options={{ presentation: "modal", title: "Destinations" }} />
+          <Stack.Screen name="analytics" options={{ presentation: "modal", title: "Analytics" }} />
+        </Stack>
+  
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </SessionProvider>
   );
 }

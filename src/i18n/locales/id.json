@@ -7,7 +7,9 @@
     "successMsg": "Terima kasih!",
     "specify": "Jelaskan",
     "optional": "Opsional",
-    "bag": "Kantong"
+    "bag": "Kantong",
+    "bags": "Kantong",
+    "kg": "kg"
   },
 
   "placeholders": {
@@ -28,8 +30,8 @@
       "placeholder": "Pilih homestay",
       "otherLabel": "Nama homestay lainnya",
       "otherPlaceholder": "Ketik nama…",
-      "bagsLabel": "Jumlah kantong per homestay",
-      "kgLabel": "Berat terkumpul per homestay (kg)"
+      "bagsLabel": "Kantong terkumpul (homestay)",
+      "kgLabel": "Berat terkumpul (homestay, kg)"
     },
 
     "locations": {
@@ -38,8 +40,8 @@
       "placeholder": "Pilih lokasi",
       "otherLabel": "Nama lokasi lainnya",
       "otherPlaceholder": "Ketik nama…",
-      "bagsLabel": "Jumlah kantong per lokasi",
-      "kgLabel": "Berat terkumpul per lokasi (kg)"
+      "bagsLabel": "Kantong terkumpul (lokasi)",
+      "kgLabel": "Berat terkumpul (lokasi, kg)"
     },
 
     "trash": {
@@ -51,40 +53,19 @@
       "otherPlaceholder": "Ketik jenis sampah…",
 
       "bagsCountLabel": "Jumlah kantong",
-      "bagKgLabel": "Berat tiap kantong (kg)",
-      "bagNLabel": "Kantong {{n}}",
-      "typeTotalLabel": "Total ({{type}})",
-      "kgOptionalNote": "Berat (kg) bersifat opsional",
-
-      "summaryTitle": "Ringkasan",
-      "totalBags": "Total kantong",
-      "totalKg": "Total kg"
-    },
-
-    "destinations": {
-      "title": "Tujuan",
-      "subtitle": "Ke mana setiap kantong dibawa",
-
-      "destinationLabel": "Tujuan",
-      "destinationPlaceholder": "Pilih tujuan",
-
-      "summaryTitle": "Ringkasan",
-      "totalBags": "Total kantong",
-
-      "submitting": "Mengirim…",
-
-      "errors": {
-        "noBags": "Silakan tambahkan setidaknya satu kantong.",
-        "missingDestination": "Silakan pilih tujuan untuk: {{item}}"
-      }
+      "kgPerBagLabel": "Berat per kantong (kg, opsional)",
+      "bagLabel": "Kantong {{n}}",
+      "totalForType": "Total ({{item}})"
     },
 
     "totals": {
       "title": "Total",
-      "bagsHomestay": "Total kantong (homestay)",
-      "kgHomestay": "Total berat (homestay)",
-      "bagsLocation": "Total kantong (lokasi)",
-      "kgLocation": "Total berat (lokasi)"
+      "bagsHomestay": "Kantong (homestay)",
+      "kgHomestay": "Kg (homestay)",
+      "bagsLocation": "Kantong (lokasi)",
+      "kgLocation": "Kg (lokasi)",
+      "bagsTrash": "Kantong (penyortiran)",
+      "kgTrash": "Kg (penyortiran)"
     },
 
     "submit": "Kirim ✅",
@@ -115,6 +96,22 @@
   },
 
   "destinations": {
+    "sectionTitle": "Tujuan per jenis sampah",
+    "bagsLabel": "Kantong",
+    "destinationLabel": "Tujuan",
+    "destinationPlaceholder": "Pilih tujuan",
+    "hintOptional": "Opsional jika kantong = 0",
+
+    "totalsTitle": "Ringkasan",
+    "totalBags": "Total kantong",
+
+    "submitting": "Mengirim…",
+
+    "errors": {
+      "noBags": "Silakan tambahkan setidaknya satu kantong.",
+      "missingDestination": "Silakan pilih tujuan untuk: {{item}}"
+    },
+
     "landfill": "Tempat pembuangan akhir",
     "bank_sampah": "Bank sampah",
     "kri": "Pulau Kri"
@@ -125,7 +122,7 @@
     "locationSubtitle": "Homestay dan lokasi pembersihan",
 
     "trashTitle": "Penyortiran",
-    "trashSubtitle": "Catat kantong dan kg per kantong",
+    "trashSubtitle": "Catat kantong dan berat (kg)",
 
     "recycleTitle": "Tujuan",
     "recycleSubtitle": "Ke mana setiap kantong dibawa",
@@ -134,5 +131,46 @@
     "analyticsSubtitle": "Lihat total",
 
     "footerNote": "Dibuat oleh Soul Initiatives – Raja Ampat"
+  },
+
+  "analytics": {
+    "title": "Analitik",
+    "subtitle": {
+      "day": "Total dikelompokkan per hari",
+      "month": "Total dikelompokkan per bulan",
+      "year": "Total dikelompokkan per tahun"
+    },
+    "period": {
+      "day": "Hari",
+      "month": "Bulan",
+      "year": "Tahun"
+    },
+
+    "sections": {
+      "collected": "Terkumpul",
+      "sorted": "Disortir",
+      "sent": "Ke mana dibawa"
+    },
+
+    "labels": {
+      "homestays": "Homestay",
+      "locations": "Lokasi",
+      "sorted": "Penyortiran",
+      "total": "Total",
+      "reports": "Laporan"
+    },
+
+    "destinations": {
+      "landfill": "TPA",
+      "bankSampah": "Bank Sampah",
+      "kri": "Kri"
+    },
+
+    "empty": {
+      "title": "Belum ada data",
+      "body": "Kirim setidaknya satu entri di Lokasi, Penyortiran, atau Tujuan untuk melihat total di sini."
+    },
+
+    "hint": "Tarik ke bawah untuk memuat ulang."
   }
 }

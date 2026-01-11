@@ -7,7 +7,9 @@
     "successMsg": "Thank you!",
     "specify": "Specify",
     "optional": "Optional",
-    "bag": "Bag"
+    "bag": "Bag",
+    "bags": "Bags",
+    "kg": "kg"
   },
 
   "placeholders": {
@@ -28,8 +30,8 @@
       "placeholder": "Choose homestay(s)",
       "otherLabel": "Other homestay name",
       "otherPlaceholder": "Type name…",
-      "bagsLabel": "Bags collected per homestay",
-      "kgLabel": "Weight collected per homestay (kg)"
+      "bagsLabel": "Bags collected (homestays)",
+      "kgLabel": "Weight collected (homestays, kg)"
     },
 
     "locations": {
@@ -38,8 +40,8 @@
       "placeholder": "Choose location(s)",
       "otherLabel": "Other location name",
       "otherPlaceholder": "Type name…",
-      "bagsLabel": "Bags collected per location",
-      "kgLabel": "Weight collected per location (kg)"
+      "bagsLabel": "Bags collected (locations)",
+      "kgLabel": "Weight collected (locations, kg)"
     },
 
     "trash": {
@@ -51,40 +53,19 @@
       "otherPlaceholder": "Type trash type…",
 
       "bagsCountLabel": "Number of bags",
-      "bagKgLabel": "Kg for each bag",
-      "bagNLabel": "Bag {{n}}",
-      "typeTotalLabel": "Total ({{type}})",
-      "kgOptionalNote": "Kg is optional",
-
-      "summaryTitle": "Summary",
-      "totalBags": "Total bags",
-      "totalKg": "Total kg"
-    },
-
-    "destinations": {
-      "title": "Destinations",
-      "subtitle": "Where each bag is going",
-
-      "destinationLabel": "Destination",
-      "destinationPlaceholder": "Select destination",
-
-      "summaryTitle": "Summary",
-      "totalBags": "Total bags",
-
-      "submitting": "Submitting…",
-
-      "errors": {
-        "noBags": "Please add at least one bag.",
-        "missingDestination": "Please select a destination for: {{item}}"
-      }
+      "kgPerBagLabel": "Weight per bag (kg, optional)",
+      "bagLabel": "Bag {{n}}",
+      "totalForType": "Total ({{item}})"
     },
 
     "totals": {
       "title": "Totals",
-      "bagsHomestay": "Total bags (homestays)",
-      "kgHomestay": "Total weight (homestays)",
-      "bagsLocation": "Total bags (locations)",
-      "kgLocation": "Total weight (locations)"
+      "bagsHomestay": "Bags (homestays)",
+      "kgHomestay": "Kg (homestays)",
+      "bagsLocation": "Bags (locations)",
+      "kgLocation": "Kg (locations)",
+      "bagsTrash": "Bags (sorting)",
+      "kgTrash": "Kg (sorting)"
     },
 
     "submit": "Submit ✅",
@@ -115,6 +96,22 @@
   },
 
   "destinations": {
+    "sectionTitle": "Destinations per trash type",
+    "bagsLabel": "Bags",
+    "destinationLabel": "Destination",
+    "destinationPlaceholder": "Select destination",
+    "hintOptional": "Optional if bags = 0",
+
+    "totalsTitle": "Summary",
+    "totalBags": "Total bags",
+
+    "submitting": "Submitting…",
+
+    "errors": {
+      "noBags": "Please add at least one bag.",
+      "missingDestination": "Please select a destination for: {{item}}"
+    },
+
     "landfill": "Landfill",
     "bank_sampah": "Waste bank",
     "kri": "Kri Island"
@@ -125,7 +122,7 @@
     "locationSubtitle": "Homestays and cleanup locations",
 
     "trashTitle": "Sorting",
-    "trashSubtitle": "Record bags and kg per bag",
+    "trashSubtitle": "Record bags and weight (kg)",
 
     "recycleTitle": "Destinations",
     "recycleSubtitle": "Where each bag is going",
@@ -134,5 +131,46 @@
     "analyticsSubtitle": "View totals",
 
     "footerNote": "Made by Soul Initiatives – Raja Ampat"
+  },
+
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": {
+      "day": "Totals grouped by day",
+      "month": "Totals grouped by month",
+      "year": "Totals grouped by year"
+    },
+    "period": {
+      "day": "Day",
+      "month": "Month",
+      "year": "Year"
+    },
+
+    "sections": {
+      "collected": "Collected",
+      "sorted": "Sorted",
+      "sent": "Where it went"
+    },
+
+    "labels": {
+      "homestays": "Homestays",
+      "locations": "Locations",
+      "sorted": "Sorting",
+      "total": "Total",
+      "reports": "Reports"
+    },
+
+    "destinations": {
+      "landfill": "Landfill",
+      "bankSampah": "Bank Sampah",
+      "kri": "Kri"
+    },
+
+    "empty": {
+      "title": "No data yet",
+      "body": "Submit at least one entry in Location, Sorting, or Destinations to see totals here."
+    },
+
+    "hint": "Pull down to refresh."
   }
 }

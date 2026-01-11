@@ -2,7 +2,7 @@
   "expo": {
     "name": "Sampah Track",
     "slug": "sampah-track",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon3.png",
     "scheme": "sampahtrack",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.sampahtrack.app",
-      "buildNumber": "2",
+      "buildNumber": "4",
       "infoPlist": {
         "NSCameraUsageDescription": "Camera access is used only if future features require photo uploads.",
         "NSPhotoLibraryUsageDescription": "Photo access is used only if future features require uploads.",
@@ -20,7 +20,7 @@
     },
     "android": {
       "package": "org.sampahtrack.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#FFFFFF"
